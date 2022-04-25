@@ -10,7 +10,7 @@ final class SampleViewController: UIViewController {
     }()
 
     private lazy var orangeView: UIView = {
-        createDummyView(with: .orange, center: CGPoint(x: 200, y: 450))
+        createDummyView(with: .orange, center: CGPoint(x: 200, y: 400))
     }()
 
     private lazy var redView: UIView = {
