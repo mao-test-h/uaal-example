@@ -1,7 +1,6 @@
 import Foundation
 
-// refered to: https://qiita.com/noppefoxwolf/items/b43d8554142e69c2ada6
-final class Unity: NSObject, UnityFrameworkListener, NativeCallsProtocol {
+final class Unity: NSObject {
     static let shared = Unity()
     private let unityFramework: UnityFramework
 
@@ -10,11 +9,29 @@ final class Unity: NSObject, UnityFrameworkListener, NativeCallsProtocol {
     }
 
     override init() {
+        unityFramework = Unity.loadUnityFramework()
+        super.init()
+    }
+
+    func sendMessage(objectName: String, functionName: String, argument: String) {
+        unityFramework.sendMessageToGO(withName: objectName, functionName: functionName, message: argument)
+    }
+
+    func pause(_ pause: Bool) {
+        unityFramework.pause(pause)
+    }
+
+    func unload() {
+        unityFramework.unloadApplication()
+    }
+
+    // ref: Unity-iPhone -> MainApp/main.mm
+    private static func loadUnityFramework() -> UnityFramework {
         let bundlePath = Bundle.main.bundlePath
         let frameworkPath = bundlePath + "/Frameworks/UnityFramework.framework"
 
         guard let bundle = Bundle(path: frameworkPath) else {
-            fatalError("failed init UnityFramework.")
+            fatalError("failed loadUnityFramework.")
         }
 
         if !bundle.isLoaded {
@@ -23,7 +40,7 @@ final class Unity: NSObject, UnityFrameworkListener, NativeCallsProtocol {
 
         let frameworkClass = bundle.principalClass as! UnityFramework.Type
         guard let framework = frameworkClass.getInstance() else {
-            fatalError("failed init UnityFramework.")
+            fatalError("failed loadUnityFramework.")
         }
 
         if framework.appController() == nil {
@@ -32,23 +49,7 @@ final class Unity: NSObject, UnityFrameworkListener, NativeCallsProtocol {
             framework.setExecuteHeader(&header)
         }
 
-        unityFramework = framework
-        super.init()
-    }
-
-
-    // MARK:- NativeCallsProtocol
-
-    func unityDidUnload(_ notification: Notification) {
-    }
-
-    func unityDidQuit(_ notification: Notification) {
-    }
-
-    // MARK:- NativeCallsProtocol
-
-    func showHostMainWindow(_ color: Swift.String!) {
-
+        return framework
     }
 
     // MARK:- AppDelegate
@@ -80,5 +81,18 @@ final class Unity: NSObject, UnityFrameworkListener, NativeCallsProtocol {
 
     func applicationWillTerminate(_ application: UIApplication) {
         unityFramework.appController().applicationWillTerminate(application)
+    }
+}
+
+extension Unity: UnityFrameworkListener {
+    func unityDidUnload(_ notification: Notification) {
+    }
+
+    func unityDidQuit(_ notification: Notification) {
+    }
+}
+
+extension Unity: NativeCallsProtocol {
+    func showHostMainWindow(_ color: Swift.String!) {
     }
 }
