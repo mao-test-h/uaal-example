@@ -33,18 +33,14 @@ final class SampleViewController: UIViewController {
         let orangeView = orangeView
         let unityView = unityView
 
+        // ネイティブUI → UaaL → ネイティブUIの描画順で行けるか検証
         view.addSubview(greenView)
         view.addSubview(yellowView)
         view.addSubview(redView)
         view.addSubview(blueView)
 
         view.addSubview(unityView)
-        NSLayoutConstraint.activate([
-            unityView.topAnchor.constraint(equalTo: view.topAnchor),
-            unityView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            unityView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            unityView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+        unityView.frame = view.frame
 
         view.addSubview(orangeView)
     }

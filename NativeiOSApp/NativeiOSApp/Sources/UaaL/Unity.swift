@@ -5,7 +5,8 @@ final class Unity: NSObject {
     private let unityFramework: UnityFramework
 
     var view: UIView {
-        unityFramework.appController().rootView
+        // NOTE: `.unityView`や`.rootView`を渡すと上手く行かないので`window`丸ごと渡す必要がありそう
+        unityFramework.appController().window!
     }
 
     override init() {
