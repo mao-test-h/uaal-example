@@ -6,7 +6,7 @@ final class Unity: NSObject {
 
     var view: UIView {
         // NOTE: `.unityView`や`.rootView`を渡すと上手く行かないので`window`丸ごと渡す必要がありそう
-        unityFramework.appController().window!
+        unityFramework.appController().rootView!
     }
 
     override init() {
@@ -39,8 +39,8 @@ final class Unity: NSObject {
             bundle.load()
         }
 
-        let frameworkClass = bundle.principalClass as! UnityFramework.Type
-        guard let framework = frameworkClass.getInstance() else {
+        guard let frameworkClass = bundle.principalClass as? UnityFramework.Type,
+              let framework = frameworkClass.getInstance() else {
             fatalError("failed loadUnityFramework.")
         }
 

@@ -1,5 +1,22 @@
 import UIKit
 
+final class LaunchViewController: UIViewController {
+    let nextView = SampleViewController();
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .red
+        nextView.modalPresentationStyle = .fullScreen
+
+        // NOTE:
+        // AppDelegateでUaaLを初期化した後に直ぐにViewControllerで`addSubview`を行っても
+        // UaaLの初期化が完了して無くて操作が効かない?説があるので少し待ってから遷移してみる。
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.present(self.nextView, animated: false)
+        }
+    }
+}
+
 final class SampleViewController: UIViewController {
     private lazy var greenView: UIView = {
         createDummyView(with: .green, center: CGPoint(x: 100, y: 300))
@@ -39,14 +56,14 @@ final class SampleViewController: UIViewController {
         view.addSubview(redView)
         view.addSubview(blueView)
 
+        // NOTE:
+        // `LaunchViewController`のコメントにも記載したが、
+        // AppDelegateでUaaLの初期化後に直ぐにこちらに遷移しても
+        // 何故か↓の操作が有効にならないので少し間を持たせている。
         view.addSubview(unityView)
         unityView.frame = view.frame
 
         view.addSubview(orangeView)
-    }
-
-    override func loadView() {
-        super.loadView()
     }
 
     private func createDummyView(with color: UIColor, center: CGPoint) -> UIView {
