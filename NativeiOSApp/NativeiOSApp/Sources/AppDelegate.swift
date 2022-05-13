@@ -6,9 +6,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let unity: Unity = Unity.shared
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        unity.application(application, didFinishLaunchingWithOptions: launchOptions)
+        unity.application(application, didFinishLaunchingWithOptions: launchOptions) { [weak self] in
+            let rootViewController = SampleViewController()
+            self?.window?.rootViewController = rootViewController
 
-        // 最初に表示する画面を呼び出す
+            // 最初に停止して置きたいなら以下を有効にする
+            /*
+            DispatchQueue.main.async {
+                self?.unity.pause(true)
+            }
+             */
+        }
+
+        // UaaLのロードが完了するまではダミーを表示
         let rootViewController = LaunchViewController()
         window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()

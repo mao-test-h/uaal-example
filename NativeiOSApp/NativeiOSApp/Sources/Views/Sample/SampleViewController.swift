@@ -1,22 +1,5 @@
 import UIKit
 
-final class LaunchViewController: UIViewController {
-    let nextView = SampleViewController();
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .red
-        nextView.modalPresentationStyle = .fullScreen
-
-        // NOTE:
-        // AppDelegateでUaaLを初期化した後に直ぐにViewControllerで`addSubview`を行っても
-        // UaaLの初期化が完了して無くて操作が効かない?説があるので少し待ってから遷移してみる。
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.present(self.nextView, animated: false)
-        }
-    }
-}
-
 final class SampleViewController: UIViewController {
     private lazy var greenView: UIView = {
         createDummyView(with: .green, center: CGPoint(x: 100, y: 300))

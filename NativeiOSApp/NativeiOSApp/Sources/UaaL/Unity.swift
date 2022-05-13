@@ -3,6 +3,7 @@ import Foundation
 final class Unity: NSObject {
     static let shared = Unity()
     private let unityFramework: UnityFramework
+    private var didWakeUpHandler: (() -> Void)? = nil
 
     var view: UIView {
         // NOTE: `.unityView`や`.rootView`を渡すと上手く行かないので`window`丸ごと渡す必要がありそう
@@ -40,7 +41,8 @@ final class Unity: NSObject {
         }
 
         guard let frameworkClass = bundle.principalClass as? UnityFramework.Type,
-              let framework = frameworkClass.getInstance() else {
+              let framework = frameworkClass.getInstance()
+        else {
             fatalError("failed loadUnityFramework.")
         }
 
@@ -55,7 +57,13 @@ final class Unity: NSObject {
 
     // MARK:- AppDelegate
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?,
+        didWakeUpHandler: @escaping () -> Void) {
+
+        self.didWakeUpHandler = didWakeUpHandler
+
         // Set UnityFramework target for Unity-iPhone/Data folder to make Data part of a UnityFramework.framework and uncomment call to setDataBundleId
         // ODR is not supported in this case, ( if you need embedded and ODR you need to copy data )
         unityFramework.setDataBundleId("com.unity3d.framework")
@@ -95,5 +103,10 @@ extension Unity: UnityFrameworkListener {
 
 extension Unity: NativeCallsProtocol {
     func showHostMainWindow(_ color: Swift.String!) {
+        print(color)
+    }
+
+    func wakeUp() {
+        didWakeUpHandler?()
     }
 }
