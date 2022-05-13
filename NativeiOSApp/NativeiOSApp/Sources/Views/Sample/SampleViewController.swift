@@ -26,6 +26,9 @@ final class SampleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // こちらを無効にするとUaaL側のタッチ判定も止まる
+        //unityView.isUserInteractionEnabled = false
+
         let greenView = greenView
         let yellowView = yellowView
         let redView = redView

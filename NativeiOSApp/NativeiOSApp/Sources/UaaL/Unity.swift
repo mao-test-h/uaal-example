@@ -109,4 +109,12 @@ extension Unity: NativeCallsProtocol {
     func wakeUp() {
         didWakeUpHandler?()
     }
+    
+    func onClickTest() {
+        print("onClickTest")
+    }
+    
+    func sendMousePosition(_ x: Float, _ y: Float, _ z: Float) {
+        print("sendMousePosition [x:\(x)], [y:\(y)], [z:\(z)]")
+    }
 }

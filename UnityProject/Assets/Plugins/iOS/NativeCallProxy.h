@@ -12,6 +12,10 @@
 
 - (void)wakeUp;
 
+- (void)onClickTest;
+
+- (void)sendMousePosition:(float)x :(float)y :(float)z;
+
 @end
 
 __attribute__ ((visibility("default")))
