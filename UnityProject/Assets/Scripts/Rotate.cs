@@ -2,10 +2,13 @@ using System.Runtime.InteropServices;
 using UnityEngine.UI;
 using UnityEngine;
 
-public sealed class Rotate : MonoBehaviour
+namespace Samples
 {
-    void Update()
+    public sealed class Rotate : MonoBehaviour
     {
-        transform.Rotate(0, Time.deltaTime * 10, 0);
+        void Update()
+        {
+            transform.Rotate(0, Time.deltaTime * 10, 0);
+        }
     }
 }
