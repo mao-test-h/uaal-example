@@ -1,29 +1,49 @@
 import Foundation
 
-// refered to: https://qiita.com/noppefoxwolf/items/b43d8554142e69c2ada6
-final class Unity: NSObject, UnityFrameworkListener, NativeCallsProtocol {
+final class Unity: NSObject {
     static let shared = Unity()
     private let unityFramework: UnityFramework
+    private var onReadyHandler: (() -> Void)? = nil
+    private var onCallbackDelegate: callbackDelegate? = nil
 
     var view: UIView {
-        unityFramework.appController().rootView
+        unityFramework.appController().rootView!
     }
 
     override init() {
+        unityFramework = Unity.loadUnityFramework()
+        super.init()
+    }
+
+    func sendMessage(objectName: String, functionName: String, argument: String) {
+        unityFramework.sendMessageToGO(withName: objectName, functionName: functionName, message: argument)
+    }
+
+    func pause(_ pause: Bool) {
+        unityFramework.pause(pause)
+    }
+
+    func unload() {
+        unityFramework.unloadApplication()
+    }
+
+    // ref: Unity-iPhone -> MainApp/main.mm
+    private static func loadUnityFramework() -> UnityFramework {
         let bundlePath = Bundle.main.bundlePath
         let frameworkPath = bundlePath + "/Frameworks/UnityFramework.framework"
 
         guard let bundle = Bundle(path: frameworkPath) else {
-            fatalError("failed init UnityFramework.")
+            fatalError("failed loadUnityFramework.")
         }
 
         if !bundle.isLoaded {
             bundle.load()
         }
 
-        let frameworkClass = bundle.principalClass as! UnityFramework.Type
-        guard let framework = frameworkClass.getInstance() else {
-            fatalError("failed init UnityFramework.")
+        guard let frameworkClass = bundle.principalClass as? UnityFramework.Type,
+              let framework = frameworkClass.getInstance()
+        else {
+            fatalError("failed loadUnityFramework.")
         }
 
         if framework.appController() == nil {
@@ -32,28 +52,18 @@ final class Unity: NSObject, UnityFrameworkListener, NativeCallsProtocol {
             framework.setExecuteHeader(&header)
         }
 
-        unityFramework = framework
-        super.init()
-    }
-
-
-    // MARK:- NativeCallsProtocol
-
-    func unityDidUnload(_ notification: Notification) {
-    }
-
-    func unityDidQuit(_ notification: Notification) {
-    }
-
-    // MARK:- NativeCallsProtocol
-
-    func showHostMainWindow(_ color: Swift.String!) {
-
+        return framework
     }
 
     // MARK:- AppDelegate
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?,
+        onReadyHandler: @escaping () -> Void) {
+
+        self.onReadyHandler = onReadyHandler
+
         // Set UnityFramework target for Unity-iPhone/Data folder to make Data part of a UnityFramework.framework and uncomment call to setDataBundleId
         // ODR is not supported in this case, ( if you need embedded and ODR you need to copy data )
         unityFramework.setDataBundleId("com.unity3d.framework")
@@ -80,5 +90,30 @@ final class Unity: NSObject, UnityFrameworkListener, NativeCallsProtocol {
 
     func applicationWillTerminate(_ application: UIApplication) {
         unityFramework.appController().applicationWillTerminate(application)
+    }
+}
+
+extension Unity: UnityFrameworkListener {
+    func unityDidUnload(_ notification: Notification) {
+    }
+
+    func unityDidQuit(_ notification: Notification) {
+    }
+}
+
+extension Unity: NativeCallsProtocol {
+    func showHostMainWindow(_ color: String) {
+        print(color)
+    }
+
+    func onReady() {
+        onReadyHandler?()
+
+        // テストでC#のコールバックを呼び出してみる
+        onCallbackDelegate?(1)
+    }
+
+    func registerCallback(_ delegate: callbackDelegate!) {
+        onCallbackDelegate = delegate
     }
 }
