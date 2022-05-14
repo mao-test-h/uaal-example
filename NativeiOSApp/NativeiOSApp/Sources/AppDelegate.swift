@@ -7,10 +7,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         unity.application(application, didFinishLaunchingWithOptions: launchOptions) { [weak self] in
+            // Unityのロードが完了したら本来表示したいViewControllerに切り替える
             let rootViewController = SampleViewController()
             self?.window?.rootViewController = rootViewController
 
-            // 最初に停止して置きたいなら以下を有効にする
+            // 起動時にUnityを停止しておきたいなら以下を有効にする
             /*
             DispatchQueue.main.async {
                 self?.unity.pause(true)

@@ -10,7 +10,7 @@ final class SampleViewController: UIViewController {
     }()
 
     private lazy var orangeView: UIView = {
-        createDummyView(with: .orange, center: CGPoint(x: 200, y: 400))
+        createDummyView(with: .orange, center: CGPoint(x: 200, y: 450))
     }()
 
     private lazy var redView: UIView = {
@@ -42,10 +42,6 @@ final class SampleViewController: UIViewController {
         view.addSubview(redView)
         view.addSubview(blueView)
 
-        // NOTE:
-        // `LaunchViewController`のコメントにも記載したが、
-        // AppDelegateでUaaLの初期化後に直ぐにこちらに遷移しても
-        // 何故か↓の操作が有効にならないので少し間を持たせている。
         view.addSubview(unityView)
         unityView.frame = view.frame
 

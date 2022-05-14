@@ -7,7 +7,6 @@ final class Unity: NSObject {
     private var onCallbackDelegate: callbackDelegate? = nil
 
     var view: UIView {
-        // NOTE: `.unityView`や`.rootView`を渡すと上手く行かないので`window`丸ごと渡す必要がありそう
         unityFramework.appController().rootView!
     }
 
@@ -103,7 +102,7 @@ extension Unity: UnityFrameworkListener {
 }
 
 extension Unity: NativeCallsProtocol {
-    func showHostMainWindow(_ color: Swift.String!) {
+    func showHostMainWindow(_ color: String) {
         print(color)
     }
 
