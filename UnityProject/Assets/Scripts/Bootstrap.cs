@@ -10,24 +10,24 @@ sealed class Bootstrap : MonoBehaviour
 #if UNITY_IOS || UNITY_TVOS
     void Start()
     {
-        WakeUp();
+        RegisterSampleCallback(OnCallback);
+        Ready();
 
-        _button.onClick.AddListener(OnClickTest);
+        _button.onClick.AddListener(() => { NativeAPI.showHostMainWindow("test"); });
     }
 
-    void Update()
+    delegate void CallbackDelegate(int num);
+
+    [AOT.MonoPInvokeCallbackAttribute(typeof(CallbackDelegate))]
+    static void OnCallback(int num)
     {
-        var pos = Input.mousePosition;
-        SendMousePosition(pos.x, pos.y, pos.z);
+        Debug.Log($"ネイティブコードから呼び出された : {num}");
     }
 
-    [DllImport("__Internal", EntryPoint = "wakeUp")]
-    static extern void WakeUp();
+    [DllImport("__Internal", EntryPoint = "ready")]
+    static extern void Ready();
 
-    [DllImport("__Internal", EntryPoint = "onClickTest")]
-    static extern void OnClickTest();
-
-    [DllImport("__Internal", EntryPoint = "sendMousePosition")]
-    static extern void SendMousePosition(float x, float y, float z);
+    [DllImport("__Internal", EntryPoint = "registerSampleCallback")]
+    static extern void RegisterSampleCallback(CallbackDelegate callback);
 #endif
 }

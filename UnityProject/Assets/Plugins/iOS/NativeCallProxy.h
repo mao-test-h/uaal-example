@@ -3,6 +3,8 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void (* callbackDelegate)(int);
+
 // NativeCallsProtocol defines protocol with methods you want to be called from managed
 // NOTE: これをネイティブアプリ側で実装することでUnityからのイベントを受け取ることが可能
 @protocol NativeCallsProtocol
@@ -10,11 +12,9 @@
 
 - (void)showHostMainWindow:(NSString*)color;
 
-- (void)wakeUp;
+- (void)onReady;
 
-- (void)onClickTest;
-
-- (void)sendMousePosition:(float)x :(float)y :(float)z;
+- (void)registerCallback:(callbackDelegate)delegate;
 
 @end
 

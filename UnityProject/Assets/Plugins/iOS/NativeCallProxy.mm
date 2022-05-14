@@ -18,16 +18,12 @@ void showHostMainWindow(const char* color) {
     return [api showHostMainWindow:[NSString stringWithUTF8String:color]];
 }
 
-void wakeUp() {
-    return [api wakeUp];
+void ready() {
+    [api onReady];
 }
 
-void onClickTest() {
-    [api onClickTest];
-}
-
-void sendMousePosition(float x, float y, float z) {
-    [api sendMousePosition:x :y :z];
+void registerSampleCallback(callbackDelegate callbackDelegate) {
+    [api registerCallback:callbackDelegate];
 }
 
 }
