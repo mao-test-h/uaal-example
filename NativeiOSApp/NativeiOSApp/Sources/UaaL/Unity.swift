@@ -3,7 +3,8 @@ import Foundation
 final class Unity: NSObject {
     static let shared = Unity()
     private let unityFramework: UnityFramework
-    private var didWakeUpHandler: (() -> Void)? = nil
+    private var onReadyHandler: (() -> Void)? = nil
+    private var onCallbackDelegate: callbackDelegate? = nil
 
     var view: UIView {
         // NOTE: `.unityView`や`.rootView`を渡すと上手く行かないので`window`丸ごと渡す必要がありそう
@@ -60,9 +61,9 @@ final class Unity: NSObject {
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?,
-        didWakeUpHandler: @escaping () -> Void) {
+        onReadyHandler: @escaping () -> Void) {
 
-        self.didWakeUpHandler = didWakeUpHandler
+        self.onReadyHandler = onReadyHandler
 
         // Set UnityFramework target for Unity-iPhone/Data folder to make Data part of a UnityFramework.framework and uncomment call to setDataBundleId
         // ODR is not supported in this case, ( if you need embedded and ODR you need to copy data )
@@ -106,15 +107,14 @@ extension Unity: NativeCallsProtocol {
         print(color)
     }
 
-    func wakeUp() {
-        didWakeUpHandler?()
+    func onReady() {
+        onReadyHandler?()
+
+        // テストでC#のコールバックを呼び出してみる
+        onCallbackDelegate?(1)
     }
-    
-    func onClickTest() {
-        print("onClickTest")
-    }
-    
-    func sendMousePosition(_ x: Float, _ y: Float, _ z: Float) {
-        print("sendMousePosition [x:\(x)], [y:\(y)], [z:\(z)]")
+
+    func registerCallback(_ delegate: callbackDelegate!) {
+        onCallbackDelegate = delegate
     }
 }
