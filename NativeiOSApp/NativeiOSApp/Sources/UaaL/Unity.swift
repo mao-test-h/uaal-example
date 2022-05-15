@@ -4,7 +4,7 @@ final class Unity: NSObject {
     static let shared = Unity()
     private let unityFramework: UnityFramework
     private var onReadyHandler: (() -> Void)? = nil
-    private var onCallbackDelegate: callbackDelegate? = nil
+    private var onCallbackDelegate: CallbackDelegate? = nil
 
     var view: UIView {
         unityFramework.appController().rootView!
@@ -113,7 +113,7 @@ extension Unity: NativeCallsProtocol {
         onCallbackDelegate?(1)
     }
 
-    func registerCallback(_ delegate: callbackDelegate!) {
+    func registerCallback(_ delegate: @escaping CallbackDelegate) {
         onCallbackDelegate = delegate
     }
 }

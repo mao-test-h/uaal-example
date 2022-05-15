@@ -19,10 +19,6 @@ namespace Samples.Editor
 
             var targetGuid = project.GetUnityFrameworkTargetGuid();
 
-            // `NativeCallProxy.h`をpublicに設定
-            var headerGuid = project.FindFileGuidByProjectPath("Libraries/Plugins/iOS/NativeCallProxy.h");
-            project.AddPublicHeaderToBuild(targetGuid, headerGuid);
-
             // `Data`フォルダを[Build Phase -> Copy Bundle Resources]に追加
             var dataPathGuid = project.FindFileGuidByProjectPath("Data");
             var resPhaseGuid = project.GetResourcesBuildPhaseByTarget(targetGuid);
