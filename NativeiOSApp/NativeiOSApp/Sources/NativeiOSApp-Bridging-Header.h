@@ -3,4 +3,3 @@
 //
 
 #include <UnityFramework/UnityFramework.h>
-#include <UnityFramework/NativeCallProxy.h>

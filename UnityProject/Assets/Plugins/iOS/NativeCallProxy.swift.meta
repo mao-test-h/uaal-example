@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fd57ecaa04fd244eaaeee41727d10169
+guid: f1382914683f34bb19871537cc69410f
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -11,18 +11,6 @@ PluginImporter:
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
-  - first:
-      : Any
-    second:
-      enabled: 0
-      settings:
-        Exclude Editor: 1
-        Exclude Linux64: 1
-        Exclude OSXUniversal: 1
-        Exclude Win: 1
-        Exclude Win64: 1
-        Exclude iOS: 0
-        Exclude tvOS: 0
   - first:
       Any: 
     second:
@@ -40,11 +28,6 @@ PluginImporter:
       enabled: 1
       settings:
         AddToEmbeddedBinaries: false
-  - first:
-      tvOS: tvOS
-    second:
-      enabled: 1
-      settings: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
